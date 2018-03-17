@@ -115,6 +115,23 @@ var UIModule = (function() {
             document.querySelector(element).insertAdjacentHTML('beforeEnd', newHTML);
 
         },
+        
+        // Clear Input Fields After Each Input Is Accpeted in UI
+        clearFields: function() {
+            
+            var fields, fieldsArr;
+            
+            fields = document.querySelectorAll(DOMStrings.inputDescription + ', ' + DOMStrings.inputValue);
+        
+            // For converting 'fields' list to array
+            fieldsArr = Array.prototype.slice.call(fields);
+
+            fieldsArr.forEach(function(current, index, array) {
+                current.value = "";
+            });
+
+            fieldsArr[0].focus();
+        },
 
         // Public Interface of DOMStrings Variable
         getDOMStrings: function() {
@@ -158,9 +175,12 @@ var controllerModule = (function(model, view) {
         // 3. Add the new item to the UI
         view.addListItem(newItem, input.type);
 
-        // 4. Calculate the budget
+        // 4. For claering the input fields
+        view.clearFields();
 
-        // 5. Display the budget on the UI
+        // 5. Calculate the budget
+
+        // 6. Display the budget on the UI
     };
 
     // Public Interface For controllerModule
