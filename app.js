@@ -82,7 +82,7 @@ var UIModule = (function() {
             return {
                 type: document.querySelector(DOMStrings.inputType).value,
                 description: document.querySelector(DOMStrings.inputDescription).value,
-                value: document.querySelector(DOMStrings.inputValue).value
+                value: parseFloat(document.querySelector(DOMStrings.inputValue).value)
             };
         },
 
@@ -161,6 +161,16 @@ var controllerModule = (function(model, view) {
 
     };
 
+    var updateBudget = function() {
+
+        // 1. Calculate the budget
+
+        // 2. Return the budget
+
+        // 3. Display the budget on the UI
+
+    };
+
     // IIFE For Addition of New Income or Expense Item
     var ctrlAddItem = function() {
 
@@ -169,18 +179,22 @@ var controllerModule = (function(model, view) {
         // 1. Get the field Input Data
         input = view.getInput();
 
-        // 2. Add the item to the budget Controller
-        newItem = model.addItem(input.type, input.description, input.value);
+        if(input.description !== "" && !isNaN(input.value) && (input.value > 0)) {
 
-        // 3. Add the new item to the UI
-        view.addListItem(newItem, input.type);
+            // 2. Add the item to the budget Controller
+            newItem = model.addItem(input.type, input.description, input.value);
 
-        // 4. For claering the input fields
-        view.clearFields();
+            // 3. Add the new item to the UI
+            view.addListItem(newItem, input.type);
 
-        // 5. Calculate the budget
+            // 4. For clearing the input fields
+            view.clearFields();
 
-        // 6. Display the budget on the UI
+            // 5. Calculate and Update Budget
+            updateBudget();
+
+        }
+
     };
 
     // Public Interface For controllerModule
