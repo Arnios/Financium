@@ -55,7 +55,7 @@ var dataModule = (function() {
             
 
             // Creating new 'inc' or 'exp' object
-            if(type === 'inc') {
+            if (type === 'inc') {
                 newItem = new Income(ID, des, val);
             } else if (type === 'exp') {
                 newItem = new Expense(ID, des, val);
@@ -66,6 +66,26 @@ var dataModule = (function() {
 
             // Making newly created object publicly avaiable foe usage by other modules
             return newItem;    
+        },
+
+        deleteItem : function(type, id) {
+
+            var ids, index;
+
+            // Mapping 'inc' and 'exp' array elements by their index by using 'map' method
+
+            ids = data.allItems[type].map(function(current) {
+                return current.id;
+            });
+
+            index = ids.indexOf(id);
+
+            if (index !== -1) {
+
+                data.allItems[type].splice(index, 1);
+
+            }
+
         },
 
         calculateBudget: function() {
@@ -114,7 +134,8 @@ var UIModule = (function() {
         budgetLabel         : '.budget__value',
         incomeLabel         : '.budget__income--value',
         expenseLabel        : '.budget__expenses--value',
-        percentageLabel     : '.budget__expenses--percentage'
+        percentageLabel     : '.budget__expenses--percentage',
+        container           : '.container'
     };
 
     // Public Interface of UIModule
@@ -139,13 +160,13 @@ var UIModule = (function() {
 
                 element = DOMStrings.incomeContainer;
 
-                html = '<div class="item clearfix" id="income-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>'
+                html = '<div class="item clearfix" id="inc-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>'
 
             } else if (type === 'exp') {
 
                 element = DOMStrings.expenseContainer;
 
-                html = '<div class="item clearfix" id="expense-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">10%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>'
+                html = '<div class="item clearfix" id="exp-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">10%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>'
 
             }
 
@@ -216,6 +237,8 @@ var controllerModule = (function(model, view) {
             }
         });
 
+        document.querySelector(DOM.container).addEventListener('click', ctrlDeleteItem)
+
     };
 
     var updateBudget = function() {
@@ -251,6 +274,30 @@ var controllerModule = (function(model, view) {
 
             // 5. Calculate and Update Budget
             updateBudget();
+
+        }
+
+    };
+
+    var ctrlDeleteItem = function(event) {
+
+        var itemID, splitID, type, ID;
+
+        itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
+
+        if (itemID) {
+
+            splitID = itemID.split('-');
+            type = splitID[0];
+            ID = parseInt(splitID[1]);
+            
+            // Delete the Item From the Data Structure
+            dataModule.deleteItem(type, ID);
+            
+            // Delete the Item From the UI
+
+
+            // Update and Show the New Budget
 
         }
 
