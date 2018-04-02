@@ -179,6 +179,13 @@ var UIModule = (function() {
             document.querySelector(element).insertAdjacentHTML('beforeEnd', newHTML);
 
         },
+
+        deleteListItem: function(selectorID) {
+
+            var el = document.getElementById(selectorID);
+            el.parentNode.removeChild(el);
+
+        },
         
         // Clear Input Fields After Each Input Is Accpeted in UI
         clearFields: function() {
@@ -244,13 +251,13 @@ var controllerModule = (function(model, view) {
     var updateBudget = function() {
 
         // 1. Calculate the budget
-        dataModule.calculateBudget();
+        model.calculateBudget();
 
         // 2. Return the budget
-        var budget = dataModule.getBudget();
+        var budget = model.getBudget();
 
         // 3. Display the budget on the UI
-        UIModule.displayBudget(budget);
+        view.displayBudget(budget);
     };
 
     // IIFE For Addition of New Income or Expense Item
@@ -292,12 +299,13 @@ var controllerModule = (function(model, view) {
             ID = parseInt(splitID[1]);
             
             // Delete the Item From the Data Structure
-            dataModule.deleteItem(type, ID);
+            model.deleteItem(type, ID);
             
             // Delete the Item From the UI
-
+            view.deleteListItem(itemID);
 
             // Update and Show the New Budget
+            updateBudget();
 
         }
 
@@ -311,7 +319,7 @@ var controllerModule = (function(model, view) {
             
             console.log('Application has started');
             
-            UIModule.displayBudget({
+            view.displayBudget({
                 budget: 0,
                 totalIncome: 0,
                 totalExpense: 0,
