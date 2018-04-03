@@ -12,6 +12,26 @@ var dataModule = (function() {
         this.id = id;
         this.description = description;
         this.value = value;
+        this.percentage = -1;
+    };
+
+    Expense.prototype.calcPercentage = function(totalIncome) {
+
+        if (totalIncome > 0) {
+
+            this.percentage = Math.round((this.value / totalIncome) * 100);
+
+        } else {
+
+            this.percentage = -1;
+        }
+
+    };
+
+    Expense.prototype.getPercentage = function() {
+
+        return this.percentage;
+
     };
 
     var calculateTotal = function(type) {
@@ -40,7 +60,7 @@ var dataModule = (function() {
         percentage: -1
     };
 
-    // Public Interface for dataNodule
+    // Public Interface for 'Data Module'
     return {
 
         addItem: function(type, des, val) {
@@ -103,6 +123,29 @@ var dataModule = (function() {
             }else {
                 data.percentage = -1;
             }
+        },
+
+        calculatePercentages: function() {
+
+            data.allItems.exp.forEach(function(current) {
+
+                current.calcPercentage(data.totals.inc);
+
+            });
+
+        },
+
+        getPercentages: function() {
+
+            var allPercentages = data.allItems.exp.map(function(current) {
+
+                return current.getPercentage();
+
+            });
+
+            // Array With All of The Individual Percentages Stored In
+            return allPercentages;
+
         },
 
         getBudget: function() {
@@ -260,27 +303,45 @@ var controllerModule = (function(model, view) {
         view.displayBudget(budget);
     };
 
+    var updatePercentages = function() {
+
+        var percentages;
+
+        // Calculate the Pecentages
+        model.calculatePercentages();
+        
+        // Get Percentages From Data Module
+        percentages = model.getPercentages();
+
+        // Update the UI With New Percentages
+        console.log(percentages);
+
+    };
+
     // IIFE For Addition of New Income or Expense Item
     var ctrlAddItem = function() {
 
         var input, newItem;
 
-        // 1. Get the field Input Data
+        // Get the field Input Data
         input = view.getInput();
 
         if(input.description !== "" && !isNaN(input.value) && (input.value > 0)) {
 
-            // 2. Add the item to the budget Controller
+            // Add the item to the Data Module
             newItem = model.addItem(input.type, input.description, input.value);
 
-            // 3. Add the new item to the UI
+            // Add the new item to the UI
             view.addListItem(newItem, input.type);
 
-            // 4. For clearing the input fields
+            // For clearing the input fields
             view.clearFields();
 
-            // 5. Calculate and Update Budget
+            // Calculate and Update Budget
             updateBudget();
+
+            // Calculate and Update Percentages
+            updatePercentages();
 
         }
 
@@ -306,6 +367,9 @@ var controllerModule = (function(model, view) {
 
             // Update and Show the New Budget
             updateBudget();
+
+            // Calculate and Update Percentages
+            updatePercentages();
 
         }
 
