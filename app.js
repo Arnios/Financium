@@ -178,7 +178,8 @@ var UIModule = (function() {
         incomeLabel         : '.budget__income--value',
         expenseLabel        : '.budget__expenses--value',
         percentageLabel     : '.budget__expenses--percentage',
-        container           : '.container'
+        container           : '.container',
+        expensePercLabel    : '.item__percentage'
     };
 
     // Public Interface of UIModule
@@ -261,6 +262,39 @@ var UIModule = (function() {
 
         },
 
+        displayPercentages: function(percentages) {
+
+            var fields = document.querySelectorAll(DOMStrings.expensePercLabel);
+
+            // Custom Function For Node List Traversal
+            var nodeListForEach = function(list, callback) {
+
+                for (var i = 0; i < list.length; i++) {
+
+                    callback(list[i], i);
+
+                }
+
+            };
+
+            nodeListForEach(fields, function(current, index) {
+
+                if (percentages[index] > 0) {
+
+                    current.textContent = percentages[index] + '%';
+                
+                } else {
+
+                    current.textContent = '--';
+
+                }
+
+
+
+            });
+
+        },
+
         // Public Interface of DOMStrings Variable
         getDOMStrings: function() {
             return DOMStrings;
@@ -314,7 +348,7 @@ var controllerModule = (function(model, view) {
         percentages = model.getPercentages();
 
         // Update the UI With New Percentages
-        console.log(percentages);
+        view.displayPercentages(percentages);
 
     };
 
