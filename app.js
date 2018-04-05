@@ -179,7 +179,8 @@ var UIModule = (function() {
         expenseLabel        : '.budget__expenses--value',
         percentageLabel     : '.budget__expenses--percentage',
         container           : '.container',
-        expensePercLabel    : '.item__percentage'
+        expensePercLabel    : '.item__percentage',
+        dateLabel           : '.budget__title--month'
     };
 
     // Public Interface of UIModule
@@ -292,6 +293,19 @@ var UIModule = (function() {
 
 
             });
+
+        },
+
+        displayDate: function() {
+
+            var now, year, month, monthArray;
+
+            now = new Date();
+            year = now.getFullYear();
+            month = now.getMonth();
+            monthArray = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+            document.querySelector(DOMStrings.dateLabel).textContent = monthArray[month] + ', ' + year;
 
         },
 
@@ -417,6 +431,8 @@ var controllerModule = (function(model, view) {
             
             console.log('Application has started');
             
+            view.displayDate();
+
             view.displayBudget({
                 budget: 0,
                 totalIncome: 0,
