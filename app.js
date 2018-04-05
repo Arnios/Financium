@@ -183,6 +183,15 @@ var UIModule = (function() {
         dateLabel           : '.budget__title--month'
     };
 
+    // Custom Function For Node List Traversal
+    var nodeListForEach = function(list, callback) {
+
+        for (var i = 0; i < list.length; i++) {
+
+            callback(list[i], i);
+        }
+    };
+
     // Public Interface of UIModule
     return {
 
@@ -267,33 +276,18 @@ var UIModule = (function() {
 
             var fields = document.querySelectorAll(DOMStrings.expensePercLabel);
 
-            // Custom Function For Node List Traversal
-            var nodeListForEach = function(list, callback) {
-
-                for (var i = 0; i < list.length; i++) {
-
-                    callback(list[i], i);
-
-                }
-
-            };
-
             nodeListForEach(fields, function(current, index) {
 
                 if (percentages[index] > 0) {
 
                     current.textContent = percentages[index] + '%';
-                
+            
                 } else {
 
                     current.textContent = '--';
 
                 }
-
-
-
             });
-
         },
 
         displayDate: function() {
@@ -306,6 +300,22 @@ var UIModule = (function() {
             monthArray = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
             document.querySelector(DOMStrings.dateLabel).textContent = monthArray[month] + ', ' + year;
+
+        },
+
+        changeType: function() {
+
+            var fields;
+
+            fields = document.querySelectorAll(DOMStrings.inputType + ',' + DOMStrings.inputDescription + ',' + DOMStrings.inputValue);
+
+            nodeListForEach(fields, function(current) {
+
+                current.classList.toggle('red-focus');
+
+            });
+
+            document.querySelector(DOMStrings.inputBtn).classList.toggle('red');
 
         },
 
@@ -335,7 +345,9 @@ var controllerModule = (function(model, view) {
             }
         });
 
-        document.querySelector(DOM.container).addEventListener('click', ctrlDeleteItem)
+        document.querySelector(DOM.container).addEventListener('click', ctrlDeleteItem);
+
+        document.querySelector(DOM.inputType).addEventListener('change', view.changeType);
 
     };
 
